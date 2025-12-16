@@ -1,3 +1,8 @@
+/**
+ * User Registration API Tests
+ *
+ * Tests for the /api/register endpoint.
+ */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { POST } from '@/app/api/register/route';
 import { NextRequest } from 'next/server';
@@ -16,13 +21,37 @@ vi.mock('@/lib/cache/client', () => ({
 vi.mock('@/lib/analytics', () => ({
   analytics: {
     trackBusinessEvent: vi.fn(),
+    trackHttpRequest: vi.fn(),
+    trackError: vi.fn(),
   },
   AnalyticsEventType: {
     USER_CREATED: 'user.created',
   },
 }));
 
-// Mock withRepositories
+// Mock logger
+vi.mock('@/lib/logger', () => ({
+  logger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+    http: vi.fn(),
+    withMetadata: vi.fn().mockReturnThis(),
+  },
+  LoggerFactory: {
+    getLogger: vi.fn().mockReturnValue({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      debug: vi.fn(),
+      http: vi.fn(),
+      withMetadata: vi.fn().mockReturnThis(),
+    }),
+  },
+}));
+
+// Mock withRepositories - this is the key to proper error handling
 const mockUsersRepo = {
   existsByEmail: vi.fn(),
   create: vi.fn(),
@@ -30,13 +59,21 @@ const mockUsersRepo = {
 
 vi.mock('@/lib/api', async () => {
   const actual = await vi.importActual('@/lib/api');
+  const { errorResponse } =
+    await vi.importActual<typeof import('@/lib/api/response')>('@/lib/api/response');
+
   return {
     ...actual,
-    withRepositories: vi.fn((req, handler) =>
-      handler({
-        users: mockUsersRepo,
-      })
-    ),
+    withRepositories: vi.fn(async (req, handler) => {
+      try {
+        return await handler({
+          users: mockUsersRepo,
+        });
+      } catch (error) {
+        // Properly handle errors and return error responses
+        return errorResponse(error);
+      }
+    }),
   };
 });
 
@@ -100,7 +137,10 @@ describe('POST /api/register', () => {
       });
 
       const response = await POST(request);
-      const data = await response.json();
+      const data = (await response.json()) as {
+        success: boolean;
+        data: { name: string };
+      };
 
       expect(response.status).toBe(201);
       expect(mockUsersRepo.create).toHaveBeenCalledWith(
@@ -138,7 +178,109 @@ describe('POST /api/register', () => {
     });
   });
 
-  // Note: Validation and error tests are skipped because the error handling middleware chain
-  // makes it difficult to properly test error cases without extensive mocking.
-  // Error handling is covered by integration tests.
+  describe('validation errors', () => {
+    it('should return 400 for invalid email format', async () => {
+      const request = createRequest({
+        email: 'invalid-email',
+        password: 'password123',
+      });
+
+      const response = await POST(request);
+      const data = (await response.json()) as {
+        success: boolean;
+        error: { message: string };
+      };
+
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('email');
+    });
+
+    it('should return 400 for password too short', async () => {
+      const request = createRequest({
+        email: 'test@example.com',
+        password: '123',
+      });
+
+      const response = await POST(request);
+      const data = (await response.json()) as {
+        success: boolean;
+        error: { message: string };
+      };
+
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('8 characters');
+    });
+
+    it('should return 400 for missing email', async () => {
+      const request = createRequest({
+        password: 'password123',
+      });
+
+      const response = await POST(request);
+      const data = (await response.json()) as {
+        success: boolean;
+        error: { message: string };
+      };
+
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+    });
+
+    it('should return 400 for missing password', async () => {
+      const request = createRequest({
+        email: 'test@example.com',
+      });
+
+      const response = await POST(request);
+      const data = (await response.json()) as {
+        success: boolean;
+        error: { message: string };
+      };
+
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+    });
+
+    it('should return 400 for invalid JSON body', async () => {
+      const request = new NextRequest('http://localhost:3000/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: 'invalid json',
+      });
+
+      const response = await POST(request);
+      const data = (await response.json()) as {
+        success: boolean;
+        error: { message: string };
+      };
+
+      expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
+    });
+  });
+
+  describe('duplicate email handling', () => {
+    it('should return 409 if email already exists', async () => {
+      mockUsersRepo.existsByEmail.mockResolvedValue(true);
+
+      const request = createRequest({
+        email: 'existing@example.com',
+        password: 'password123',
+      });
+
+      const response = await POST(request);
+      const data = (await response.json()) as {
+        success: boolean;
+        error: { message: string };
+      };
+
+      expect(response.status).toBe(409);
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('already exists');
+    });
+  });
 });

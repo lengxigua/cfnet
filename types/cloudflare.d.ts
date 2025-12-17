@@ -36,6 +36,10 @@ export interface CloudflareEnv {
   RATE_LIMIT_ENABLED?: string; // 'true' | 'false'
   RATE_LIMIT_MAX_REQUESTS?: string; // Numeric string
   RATE_LIMIT_WINDOW_SECONDS?: string; // Numeric string
+
+  // Stripe configuration (optional - set via wrangler secrets)
+  STRIPE_SECRET_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
 }
 
 /**

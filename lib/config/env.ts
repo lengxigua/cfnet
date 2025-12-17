@@ -20,6 +20,10 @@ const envSchema = z
       .min(1, 'GOOGLE_CLIENT_SECRET must be a non-empty string')
       .optional(),
 
+    // Stripe payment configuration
+    STRIPE_SECRET_KEY: z.string().min(1, 'STRIPE_SECRET_KEY is required').optional(),
+    STRIPE_WEBHOOK_SECRET: z.string().min(1, 'STRIPE_WEBHOOK_SECRET is required').optional(),
+
     // Rate limit configuration
     RATE_LIMIT_ENABLED: z
       .enum(['true', 'false'])

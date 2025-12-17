@@ -55,3 +55,4 @@ worker-configuration.d.ts
 .claude
 CLAUDE.md
 AGENTS.md
+.spec-workflow

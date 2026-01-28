@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
-import { successResponse, noContentResponse, withRepositories } from '@/lib/api';
+import { successResponse, noContentResponse, withRepositories, withRateLimit } from '@/lib/api';
 import { createCacheClient } from '@/lib/cache/client';
-import { ValidationError, ResourceNotFoundError } from '@/lib/errors';
+import { ResourceNotFoundError, ResourceAlreadyExistsError } from '@/lib/errors';
+import { validateIntegerId, parseAndValidateBody, userUpdateSchema } from '@/lib/validators';
 
 export const runtime = 'edge';
 
@@ -9,15 +10,7 @@ export const runtime = 'edge';
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   return withRepositories(request, async repos => {
     const { id } = await params;
-    if (!id) {
-      throw new ValidationError('User ID is required');
-    }
-
-    // Validate ID
-    const userId = parseInt(id, 10);
-    if (isNaN(userId)) {
-      throw new ValidationError('Invalid user ID');
-    }
+    const userId = validateIntegerId(id, 'User ID');
 
     // DB operation: query user (with posts)
     const user = await repos.users.findByIdWithPosts(userId, 10);
@@ -32,89 +25,84 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 // PATCH /api/users/[id] - Update user
+// Note: Rate limit applied (10/min) to prevent abuse
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  return withRepositories(request, async repos => {
-    const { id } = await params;
-    if (!id) {
-      throw new ValidationError('User ID is required');
-    }
+  return withRateLimit(
+    request,
+    async () => {
+      return withRepositories(request, async repos => {
+        const { id } = await params;
+        const userId = validateIntegerId(id, 'User ID');
 
-    // Validate ID
-    const userId = parseInt(id, 10);
-    if (isNaN(userId)) {
-      throw new ValidationError('Invalid user ID');
-    }
+        // Parse and validate request body using shared validator
+        const { email, name } = await parseAndValidateBody(request, userUpdateSchema);
 
-    // Parse request body
-    let body: { email?: string; name?: string };
-    try {
-      body = await request.json();
-    } catch (error) {
-      throw new ValidationError('Invalid JSON body', error);
-    }
+        // Check whether user exists
+        const exists = await repos.users.exists(userId);
+        if (!exists) {
+          throw new ResourceNotFoundError('User');
+        }
 
-    const { email, name } = body;
+        // Check email uniqueness if updating email
+        if (email) {
+          const emailExists = await repos.users.existsByEmail(email);
+          if (emailExists) {
+            // Get current user to check if it's the same email
+            const currentUser = await repos.users.findById(userId);
+            if (currentUser && currentUser.email !== email) {
+              throw new ResourceAlreadyExistsError('User with this email');
+            }
+          }
+        }
 
-    // Validate email format
-    if (email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        throw new ValidationError('Invalid email format');
-      }
-    }
+        // DB operation: update user
+        const user = await repos.users.update(userId, {
+          ...(email && { email }),
+          ...(name !== undefined && { name }),
+        });
 
-    // Check whether user exists
-    const exists = await repos.users.exists(userId);
-    if (!exists) {
-      throw new ResourceNotFoundError('User');
-    }
+        // Clear cache
+        const cache = createCacheClient();
+        await cache?.delete('users:all');
+        await cache?.delete(`user:${userId}`);
 
-    // DB operation: update user
-    const user = await repos.users.update(userId, {
-      ...(email && { email }),
-      ...(name !== undefined && { name }),
-    });
-
-    // Clear cache
-    const cache = createCacheClient();
-    await cache?.delete('users:all');
-    await cache?.delete(`user:${userId}`);
-
-    return successResponse(user, 'User updated successfully');
-  });
+        return successResponse(user, 'User updated successfully');
+      });
+    },
+    { maxRequests: 10, windowSeconds: 60 }
+  );
 }
 
 // DELETE /api/users/[id] - Delete user
+// Note: Strict rate limit applied (5/min) to prevent abuse
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  return withRepositories(request, async repos => {
-    const { id } = await params;
-    if (!id) {
-      throw new ValidationError('User ID is required');
-    }
+  return withRateLimit(
+    request,
+    async () => {
+      return withRepositories(request, async repos => {
+        const { id } = await params;
+        const userId = validateIntegerId(id, 'User ID');
 
-    // Validate ID
-    const userId = parseInt(id, 10);
-    if (isNaN(userId)) {
-      throw new ValidationError('Invalid user ID');
-    }
+        // Check whether user exists
+        const exists = await repos.users.exists(userId);
+        if (!exists) {
+          throw new ResourceNotFoundError('User');
+        }
 
-    // Check whether user exists
-    const exists = await repos.users.exists(userId);
-    if (!exists) {
-      throw new ResourceNotFoundError('User');
-    }
+        // DB operation: delete user (cascade delete related posts)
+        await repos.users.delete(userId);
 
-    // DB operation: delete user (cascade delete related posts)
-    await repos.users.delete(userId);
+        // Clear cache
+        const cache = createCacheClient();
+        await cache?.delete('users:all');
+        await cache?.delete(`user:${userId}`);
 
-    // Clear cache
-    const cache = createCacheClient();
-    await cache?.delete('users:all');
-    await cache?.delete(`user:${userId}`);
-
-    return noContentResponse();
-  });
+        return noContentResponse();
+      });
+    },
+    { maxRequests: 5, windowSeconds: 60 }
+  );
 }

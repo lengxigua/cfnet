@@ -1,8 +1,9 @@
 import { NextRequest } from 'next/server';
 import { successResponse, createdResponse, withRepositories, withRateLimit } from '@/lib/api';
 import { withCache, createCacheClient } from '@/lib/cache/client';
-import { ValidationError, ResourceAlreadyExistsError } from '@/lib/errors';
+import { ResourceAlreadyExistsError } from '@/lib/errors';
 import { analytics, AnalyticsEventType } from '@/lib/analytics';
+import { parseAndValidateBody, userCreateSchema } from '@/lib/validators';
 
 export const runtime = 'edge';
 
@@ -29,25 +30,8 @@ export async function POST(request: NextRequest) {
     request,
     async () => {
       return withRepositories(request, async repos => {
-        // Parse request body
-        let body: { email?: string; name?: string };
-        try {
-          body = await request.json();
-        } catch (error) {
-          throw new ValidationError('Invalid JSON body', error);
-        }
-
-        const { email, name } = body;
-
-        // Validate email
-        if (!email) {
-          throw new ValidationError('Email is required');
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          throw new ValidationError('Invalid email format');
-        }
+        // Parse and validate request body using shared validator
+        const { email, name } = await parseAndValidateBody(request, userCreateSchema);
 
         // Check whether email already exists
         const exists = await repos.users.existsByEmail(email);

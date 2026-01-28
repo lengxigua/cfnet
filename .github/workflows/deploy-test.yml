@@ -11,6 +11,10 @@ permissions:
   actions: read
   pull-requests: write
 
+env:
+  HEALTH_CHECK_RETRIES: 5
+  HEALTH_CHECK_DELAY: 10
+
 jobs:
   deploy-test:
     name: Deploy to Cloudflare Pages (Test)
@@ -67,11 +71,52 @@ jobs:
         run: cp wrangler.test.toml wrangler.toml
 
       - name: Deploy to Cloudflare Pages (Test)
+        id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy .vercel/output/static --project-name=cloudflare-worker-template-test
+
+      - name: Health Check
+        id: health-check
+        shell: bash
+        run: |
+          DEPLOYMENT_URL="${{ vars.TEST_DEPLOYMENT_URL || 'https://test.your-domain.com' }}"
+          HEALTH_ENDPOINT="${DEPLOYMENT_URL}/api/health"
+
+          echo "🔍 Running health check on $HEALTH_ENDPOINT"
+
+          for i in $(seq 1 ${{ env.HEALTH_CHECK_RETRIES }}); do
+            echo "Attempt $i/${{ env.HEALTH_CHECK_RETRIES }}..."
+
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_ENDPOINT" || echo "000")
+
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "✅ Health check passed! (HTTP $HTTP_STATUS)"
+              echo "status=success" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            echo "⏳ Health check returned HTTP $HTTP_STATUS, retrying in ${{ env.HEALTH_CHECK_DELAY }}s..."
+            sleep ${{ env.HEALTH_CHECK_DELAY }}
+          done
+
+          echo "❌ Health check failed after ${{ env.HEALTH_CHECK_RETRIES }} attempts"
+          echo "status=failed" >> $GITHUB_OUTPUT
+          exit 1
+
+      - name: Rollback on failure
+        if: failure() && steps.health-check.outputs.status == 'failed'
+        shell: bash
+        run: |
+          echo "🔄 Health check failed - initiating rollback notification"
+          echo "⚠️ Manual rollback may be required. Please check Cloudflare Pages dashboard."
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ Deployment Failed - Health Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The deployment completed but the health check failed." >> $GITHUB_STEP_SUMMARY
+          echo "Please investigate and consider rolling back in Cloudflare Pages dashboard." >> $GITHUB_STEP_SUMMARY
 
       - name: Get associated PR number
         id: pr
@@ -97,7 +142,20 @@ jobs:
               issue_number: prNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 Deployed to test environment!\n\nURL: ${deploymentUrl}\n\nCommit: ${context.payload.workflow_run.head_sha.substring(0, 7)}`
+              body: `🚀 Deployed to test environment!\n\n**URL**: ${deploymentUrl}\n**Commit**: ${context.payload.workflow_run.head_sha.substring(0, 7)}\n**Health Check**: ✅ Passed`
             })
         env:
           TEST_DEPLOYMENT_URL: ${{ vars.TEST_DEPLOYMENT_URL }}
+
+      - name: Create deployment summary
+        if: success()
+        run: |
+          echo "### 🚀 Test Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | Test |" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | ${{ vars.TEST_DEPLOYMENT_URL || 'https://test.your-domain.com' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.event.workflow_run.head_sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ github.event.workflow_run.head_branch }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Health Check | ✅ Passed |" >> $GITHUB_STEP_SUMMARY

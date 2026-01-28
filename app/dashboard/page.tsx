@@ -5,8 +5,8 @@
 
 import { auth } from '@/lib/auth/config';
 import { redirect } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from '@/components/ui';
+import { PageHeader } from '@/components/layout';
 import Link from 'next/link';
 import { handleSignOut } from '@/app/actions/auth';
 
@@ -20,19 +20,17 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground mt-2">
-              Welcome back, {session.user.name || session.user.email}!
-            </p>
-          </div>
-          <form action={handleSignOut}>
-            <Button type="submit" variant="outline">
-              Sign Out
-            </Button>
-          </form>
-        </div>
+        <PageHeader
+          title="Dashboard"
+          description={`Welcome back, ${session.user.name || session.user.email}!`}
+          actions={
+            <form action={handleSignOut}>
+              <Button type="submit" variant="outline">
+                Sign Out
+              </Button>
+            </form>
+          }
+        />
 
         <div className="grid gap-6 md:grid-cols-2">
           <Card>

@@ -288,35 +288,42 @@ function validateSchemaConsistency() {
 
 /**
  * Validate SQL syntax (basic checks)
+ * Supports different migration types: CREATE TABLE, CREATE INDEX, ALTER TABLE
  */
 function validateSqlSyntax(files) {
   info('Validating SQL syntax...');
 
   const errors = [];
 
+  // Valid SQL statement patterns for migrations
+  const validStatementPatterns = [
+    /CREATE\s+TABLE/i,
+    /CREATE\s+INDEX/i,
+    /CREATE\s+UNIQUE\s+INDEX/i,
+    /ALTER\s+TABLE/i,
+    /DROP\s+TABLE/i,
+    /DROP\s+INDEX/i,
+    /INSERT\s+INTO/i,
+    /UPDATE\s+/i,
+    /DELETE\s+FROM/i,
+  ];
+
   files.forEach(file => {
     const sqlPath = path.join(MIGRATIONS_DIR, file);
     const sql = fs.readFileSync(sqlPath, 'utf8');
 
-    // Basic syntax checks
-    const checks = [
-      {
-        pattern: /CREATE\s+TABLE/i,
-        required: true,
-        message: 'No CREATE TABLE statement found',
-      },
-      {
-        pattern: /;/,
-        required: true,
-        message: 'Missing semicolon',
-      },
-    ];
+    // Check for at least one valid SQL statement
+    const hasValidStatement = validStatementPatterns.some(pattern => pattern.test(sql));
+    if (!hasValidStatement) {
+      errors.push(
+        `${file}: No valid SQL statement found (expected CREATE TABLE, CREATE INDEX, ALTER TABLE, etc.)`
+      );
+    }
 
-    checks.forEach(check => {
-      if (check.required && !check.pattern.test(sql)) {
-        errors.push(`${file}: ${check.message}`);
-      }
-    });
+    // Check for missing semicolon
+    if (!/;/.test(sql)) {
+      errors.push(`${file}: Missing semicolon`);
+    }
   });
 
   if (errors.length > 0) {

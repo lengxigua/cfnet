@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaD1 } from '@prisma/adapter-d1';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 import { CloudflareEnv } from '@/types/cloudflare';
 
 /**
@@ -16,16 +17,33 @@ let prismaClient: PrismaClient | null = null;
 
 /**
  * Get Cloudflare environment bindings
- * Access via process.env in Edge Runtime
+ * Supports both Cloudflare Pages (via getRequestContext) and Cloudflare Workers (via process.env)
+ *
+ * IMPORTANT: This function must only be called within a request context.
+ * Do NOT call at module initialization time.
  */
 export function getCloudflareEnv(): CloudflareEnv | null {
-  // In Cloudflare Workers, bindings are exposed via process.env
+  // Try getRequestContext first (for Cloudflare Pages with @cloudflare/next-on-pages)
+  // This is the recommended approach for Cloudflare Pages
+  try {
+    const { env } = getRequestContext();
+    if (env && typeof (env as CloudflareEnv).DB !== 'undefined') {
+      return env as CloudflareEnv;
+    }
+  } catch {
+    // getRequestContext() failed - not in request context or not on Cloudflare Pages
+  }
+
+  // Fallback to process.env (for Cloudflare Workers or local development)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const env = process.env as any as CloudflareEnv;
 
   // Check whether running in Cloudflare environment
   if (!env || typeof env.DB === 'undefined') {
-    console.warn('Cloudflare bindings not available. Running in local mode?');
+    // Only warn in development to avoid log spam
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Cloudflare bindings not available. Running in local mode?');
+    }
     return null;
   }
 
@@ -69,15 +87,17 @@ export function createPrismaClient(): PrismaClient {
 
     return prismaClient;
   } else {
-    // Local development environment: Use file database
-    // Reuse global instance to avoid multiple connections during hot reload
+    // D1 binding not available - check runtime environment
     if (process.env.NODE_ENV === 'production') {
-      if (!prismaClient) {
-        prismaClient = new PrismaClient();
-      }
-      return prismaClient;
+      // In production on Cloudflare Pages, D1 should always be available via getRequestContext()
+      // If we reach here, it means we're not in a request context or D1 is misconfigured
+      throw new Error(
+        'Database not available: D1 binding not found. ' +
+          'Ensure you are calling this within a request context and D1 is configured in wrangler.toml'
+      );
     } else {
-      // Development mode: Use global variable for hot reload support
+      // Local development: Use file-based SQLite via Prisma
+      // Reuse global instance to avoid multiple connections during hot reload
       if (!global.prisma) {
         global.prisma = new PrismaClient({
           log: ['error', 'warn'],
@@ -89,10 +109,23 @@ export function createPrismaClient(): PrismaClient {
 }
 
 /**
- * Prisma Client singleton instance
- * Use this for all database operations requiring Prisma
+ * Prisma Client singleton getter
+ * IMPORTANT: This must only be called within a request context (not at module initialization)
+ *
+ * Use this for all database operations requiring Prisma.
+ * The client is lazily initialized on first access within a request.
+ *
+ * @example
+ * // In an API route or server component:
+ * const users = await prisma.user.findMany();
  */
-export const prisma = createPrismaClient();
+export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, prop: string | symbol) {
+    // Lazily create Prisma client on first property access
+    const client = createPrismaClient();
+    return client[prop as keyof PrismaClient];
+  },
+});
 
 /**
  * Reset Prisma client (mainly for tests)

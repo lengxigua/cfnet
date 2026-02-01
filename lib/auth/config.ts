@@ -12,16 +12,21 @@ import NextAuth from 'next-auth';
 import type { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
-import { verifyPassword, hashPassword } from '@/lib/auth/password';
+import { verifyPassword } from '@/lib/auth/password';
 import { prisma } from '@/lib/db/client';
 import { PrismaAdapter } from '@/lib/auth/adapter';
 
 /**
- * Dummy password hash used for constant-time verification
+ * Precomputed dummy password hash for constant-time verification
  * This prevents user enumeration by ensuring the same amount of time
  * is spent whether a user exists or not
+ *
+ * IMPORTANT: This is a precomputed hash to avoid top-level await which
+ * causes issues in Edge Runtime module initialization.
+ * Hash of: 'dummy_password_for_timing_attack_prevention'
+ * Salt: fixed 8-byte salt for consistent dummy verification
  */
-const DUMMY_PASSWORD_HASH = await hashPassword('dummy_password_for_timing_attack_prevention');
+const DUMMY_PASSWORD_HASH = 'pbkdf2:ASNFZ4mrze+OOcKS5UKk2d9YYA2jTJ5aNCDyBFD2/LVkP9STSRt59A==';
 
 export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),

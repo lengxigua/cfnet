@@ -64,6 +64,12 @@ An out‑of‑the‑box Next.js + Cloudflare full‑stack starter integrating Ed
 
 For full setup, see **[Quick Start](./QUICKSTART.md)**. It covers dependencies, Cloudflare login, resource creation, migrations, and dev server. This section provides the entry points only.
 
+## 🌟 Showcase
+
+Projects built with this starter template:
+
+- **[imgc AI](https://imgc.vip)** — A free AI image generation platform powered by DALL-E 3. Supports multiple aspect ratios, artistic styles (cinematic, photography, anime, digital art, etc.), and prompt optimization. Features lightning-fast generation, privacy-first design, and unlimited free usage with no registration required.
+
 ## 📁 Project Structure
 
 ```
@@ -287,11 +293,5 @@ After cloning:
 2. ✅ Build pages and APIs under `app/`
 3. ✅ Push code; CI/CD runs tests and deploys
 4. ✅ Focus on business logic — infra is prewired
-
-## 🌟 Showcase
-
-Projects built with this starter template:
-
-- **[imgc AI](https://imgc.vip)** — A free AI image generation platform powered by DALL-E 3. Supports multiple aspect ratios, artistic styles (cinematic, photography, anime, digital art, etc.), and prompt optimization. Features lightning-fast generation, privacy-first design, and unlimited free usage with no registration required.
 
 ---

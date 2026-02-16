@@ -84,6 +84,27 @@ const optionalEnvSchema = z.object({
 
   // External services configuration
   SENTRY_DSN: z.string().url().optional(),
+
+  // CORS configuration
+  ALLOWED_ORIGINS: z.string().default('*'),
+
+  // CSRF configuration
+  CSRF_SECRET: z.string().optional(),
+
+  // Email configuration (Resend)
+  RESEND_API_KEY: z.string().optional(),
+  FROM_EMAIL: z.string().email().optional(),
+
+  // Alerting configuration
+  ALERT_WEBHOOK_URL: z.string().url().optional(),
+
+  // Site configuration
+  SITE_NAME: z.string().default('Edge Next Starter'),
+  SITE_DESCRIPTION: z.string().default('Production-ready Next.js + Cloudflare full-stack starter'),
+  SITE_URL: z.string().url().optional(),
+
+  // i18n configuration
+  DEFAULT_LOCALE: z.enum(['en', 'zh']).default('en'),
 });
 
 /**

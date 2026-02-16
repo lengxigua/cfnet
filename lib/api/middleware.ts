@@ -13,13 +13,19 @@ function generateRequestId(): string {
 
 /**
  * Generate Trace ID (for distributed tracing)
+ * Supports inheriting parent trace ID from request headers
  */
-function generateTraceId(): string {
+function generateTraceId(request: NextRequest): string {
+  // Inherit parent trace ID from upstream services if present
+  const parentTraceId =
+    request.headers.get('X-Trace-ID') || request.headers.get('traceparent')?.split('-')[1]; // W3C Trace Context format
+  if (parentTraceId) return parentTraceId;
   return `trace_${Date.now()}_${Math.random().toString(36).substr(2, 16)}`;
 }
 
 /**
  * Generate Span ID (for specific operation tracing)
+ * Supports inheriting parent span ID from request headers
  */
 function generateSpanId(): string {
   return `span_${Math.random().toString(36).substr(2, 12)}`;
@@ -52,8 +58,9 @@ export async function withRequestLogging<T>(
   handler: () => Promise<NextResponse<T>>
 ): Promise<NextResponse<T>> {
   const requestId = generateRequestId();
-  const traceId = generateTraceId();
+  const traceId = generateTraceId(request);
   const spanId = generateSpanId();
+  const parentSpanId = request.headers.get('X-Parent-Span-ID');
   const startTime = Date.now();
 
   const url = new URL(request.url);
@@ -101,6 +108,9 @@ export async function withRequestLogging<T>(
     response.headers.set('X-Request-ID', requestId);
     response.headers.set('X-Trace-ID', traceId);
     response.headers.set('X-Span-ID', spanId);
+    if (parentSpanId) {
+      response.headers.set('X-Parent-Span-ID', parentSpanId);
+    }
     response.headers.set('X-Response-Time', `${duration}ms`);
 
     return response;

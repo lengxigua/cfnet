@@ -107,7 +107,10 @@ export class UserRepository {
   /**
    * Update user
    */
-  async update(id: number, data: { email?: string; name?: string | null }) {
+  async update(
+    id: number,
+    data: { email?: string; name?: string | null; password?: string | null; image?: string | null }
+  ) {
     try {
       const start = Date.now();
       const user = await this.prisma.user.update({

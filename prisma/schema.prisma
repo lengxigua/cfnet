@@ -23,7 +23,8 @@ model User {
   posts         Post[]
   accounts      Account[] // OAuth account associations
   sessions      Session[] // Session management
-  customer      Customer? // Stripe customer association
+  customer      Customer?   // Stripe customer association
+  auditLogs     AuditLog[]  // Audit trail
 
   @@index([email])
   @@index([createdAt])
@@ -199,6 +200,28 @@ model Invoice {
   @@index([createdAt])
   @@index([customerId, status], map: "idx_invoices_customer_status")
   @@map("invoices")
+}
+
+// Audit logs table - for tracking user and system actions
+model AuditLog {
+  id           Int     @id @default(autoincrement())
+  userId       Int?    @map("user_id")
+  action       String
+  resourceType String  @map("resource_type")
+  resourceId   String? @map("resource_id")
+  details      String? // JSON string with additional context
+  ipAddress    String? @map("ip_address")
+  userAgent    String? @map("user_agent")
+  createdAt    Int     @default(dbgenerated("(strftime('%s', 'now'))")) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([resourceType])
+  @@index([createdAt])
+  @@index([userId, action], map: "idx_audit_logs_user_action")
+  @@map("audit_logs")
 }
 
 // Stripe webhook events table - for idempotency

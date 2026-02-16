@@ -6,6 +6,7 @@ import { PaymentRepository } from './payment.repository';
 import { SubscriptionRepository } from './subscription.repository';
 import { InvoiceRepository } from './invoice.repository';
 import { WebhookEventRepository } from './webhook-event.repository';
+import { AuditLogRepository } from './audit-log.repository';
 
 /**
  * Repository Factory
@@ -19,6 +20,7 @@ export class RepositoryFactory {
   private subscriptionRepo?: SubscriptionRepository;
   private invoiceRepo?: InvoiceRepository;
   private webhookEventRepo?: WebhookEventRepository;
+  private auditLogRepo?: AuditLogRepository;
 
   constructor(private prisma: PrismaClient) {}
 
@@ -91,6 +93,16 @@ export class RepositoryFactory {
     }
     return this.webhookEventRepo;
   }
+
+  /**
+   * Get Audit Log Repository
+   */
+  get auditLogs(): AuditLogRepository {
+    if (!this.auditLogRepo) {
+      this.auditLogRepo = new AuditLogRepository(this.prisma);
+    }
+    return this.auditLogRepo;
+  }
 }
 
 /**
@@ -109,3 +121,4 @@ export { PaymentRepository } from './payment.repository';
 export { SubscriptionRepository } from './subscription.repository';
 export { InvoiceRepository } from './invoice.repository';
 export { WebhookEventRepository } from './webhook-event.repository';
+export { AuditLogRepository } from './audit-log.repository';

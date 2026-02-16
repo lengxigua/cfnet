@@ -289,12 +289,18 @@ export class AnalyticsClient {
   }
 
   /**
-   * Track error event
+   * Track error event with enhanced context
+   * Writes stack trace, URL, and user info to Analytics Engine blobs
    */
   async trackError(
     errorType: string,
     errorMessage: string,
-    metadata?: AnalyticsEvent['metadata']
+    metadata?: AnalyticsEvent['metadata'] & {
+      stack?: string;
+      url?: string;
+      operation?: string | number;
+      duration?: string | number;
+    }
   ): Promise<void> {
     await this.trackEvent({
       type: AnalyticsEventType.ERROR_OCCURRED,
@@ -302,6 +308,9 @@ export class AnalyticsClient {
       data: {
         errorType,
         errorMessage,
+        stack: metadata?.stack?.substring(0, 500),
+        url: metadata?.url,
+        operation: metadata?.operation,
       },
       metadata,
     });

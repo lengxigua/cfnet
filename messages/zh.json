@@ -1,0 +1,123 @@
+{
+  "common": {
+    "appName": "Edge Next Starter",
+    "loading": "加载中...",
+    "error": "错误",
+    "retry": "重试",
+    "backToHome": "返回首页",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "submit": "提交",
+    "search": "搜索",
+    "close": "关闭",
+    "yes": "是",
+    "no": "否",
+    "confirm": "确认"
+  },
+  "nav": {
+    "home": "首页",
+    "dashboard": "控制台",
+    "profile": "个人资料",
+    "pricing": "定价",
+    "billing": "账单",
+    "upload": "上传",
+    "login": "登录",
+    "register": "注册",
+    "signOut": "退出"
+  },
+  "home": {
+    "title": "欢迎使用 Next.js on Cloudflare",
+    "subtitle": "一个生产就绪的模板，集成 Edge Runtime、Workers、D1 和 R2",
+    "features": {
+      "edge": {
+        "title": "Edge Runtime",
+        "description": "来自 Cloudflare 全球网络的极速响应"
+      },
+      "d1": {
+        "title": "D1 数据库",
+        "description": "边缘无服务器 SQL 数据库"
+      },
+      "r2": {
+        "title": "R2 存储",
+        "description": "零出站费用的对象存储"
+      },
+      "deploy": {
+        "title": "自动部署",
+        "description": "基于 GitHub Actions 的 CI/CD 流水线"
+      }
+    },
+    "checkHealth": "检查 API 健康状态",
+    "tryUpload": "尝试文件上传 (R2)"
+  },
+  "auth": {
+    "loginTitle": "登录",
+    "loginDescription": "输入您的凭据以访问您的账户",
+    "registerTitle": "创建账户",
+    "registerDescription": "输入您的信息以创建账户",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "name": "姓名",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "还没有账户？",
+    "hasAccount": "已有账户？",
+    "orContinueWith": "或使用以下方式继续",
+    "signInWithGoogle": "使用 Google 继续"
+  },
+  "errors": {
+    "notFound": {
+      "title": "404",
+      "heading": "页面未找到",
+      "description": "您查找的页面不存在或已被移动。"
+    },
+    "generic": {
+      "heading": "出了点问题",
+      "description": "发生了意外错误，请重试。"
+    },
+    "fatal": {
+      "heading": "出了严重的问题",
+      "description": "应用程序遇到了严重错误，请刷新页面。"
+    }
+  },
+  "cookie": {
+    "message": "我们使用 Cookie 来提升您的体验。继续访问本网站即表示您同意我们使用 Cookie。",
+    "learnMore": "了解更多",
+    "acceptAll": "全部接受",
+    "necessaryOnly": "仅必要",
+    "customize": "自定义",
+    "preferences": "Cookie 偏好设置",
+    "necessary": "必要",
+    "necessaryRequired": "（必需）",
+    "necessaryDescription": "网站正常运行所必需的。",
+    "analytics": "分析",
+    "analyticsDescription": "帮助我们了解访客如何与网站互动。",
+    "marketing": "营销",
+    "marketingDescription": "用于投放个性化广告。",
+    "back": "返回",
+    "savePreferences": "保存偏好"
+  },
+  "footer": {
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "copyright": "保留所有权利。"
+  },
+  "dashboard": {
+    "title": "控制台",
+    "welcome": "欢迎回来"
+  },
+  "profile": {
+    "title": "个人资料",
+    "editProfile": "编辑资料"
+  },
+  "pricing": {
+    "title": "定价",
+    "subtitle": "选择适合您的方案"
+  },
+  "billing": {
+    "title": "账单",
+    "subtitle": "管理您的订阅和账单"
+  }
+}

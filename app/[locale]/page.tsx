@@ -11,7 +11,10 @@ export default async function Home() {
   return (
     <div className="min-h-screen flex flex-col p-8">
       {/* Top Navigation Bar */}
-      <nav className="flex justify-between items-center max-w-6xl mx-auto w-full mb-12">
+      <nav
+        aria-label="Main navigation"
+        className="flex justify-between items-center max-w-6xl mx-auto w-full mb-12"
+      >
         <h1 className="text-xl font-bold">Edge Next Starter</h1>
         <div className="flex items-center gap-4">
           {session?.user ? (
@@ -73,23 +76,26 @@ export default async function Home() {
         </div>
 
         <div className="text-center mt-8 space-x-3">
-          <a
+          <Link
             href="/api/health"
             className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
             Check API Health
-          </a>
-          <a
+          </Link>
+          <Link
             href="/upload"
             className="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
           >
             Try File Upload (R2)
-          </a>
+          </Link>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 py-6 border-t border-gray-200 dark:border-gray-800">
+      <footer
+        aria-label="Site footer"
+        className="mt-12 py-6 border-t border-gray-200 dark:border-gray-800"
+      >
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex justify-center items-center gap-4 text-sm text-muted-foreground">
             <Link href="/privacy" className="hover:text-primary hover:underline transition">

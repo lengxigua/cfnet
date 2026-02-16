@@ -1,0 +1,123 @@
+{
+  "common": {
+    "appName": "Edge Next Starter",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Try Again",
+    "backToHome": "Back to Home",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "submit": "Submit",
+    "search": "Search",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "pricing": "Pricing",
+    "billing": "Billing",
+    "upload": "Upload",
+    "login": "Login",
+    "register": "Sign Up",
+    "signOut": "Sign Out"
+  },
+  "home": {
+    "title": "Welcome to Next.js on Cloudflare",
+    "subtitle": "A production-ready template with Edge Runtime, Workers, D1, and R2",
+    "features": {
+      "edge": {
+        "title": "Edge Runtime",
+        "description": "Lightning-fast responses from Cloudflare's global network"
+      },
+      "d1": {
+        "title": "D1 Database",
+        "description": "Serverless SQL database at the edge"
+      },
+      "r2": {
+        "title": "R2 Storage",
+        "description": "Object storage without egress fees"
+      },
+      "deploy": {
+        "title": "Auto Deployment",
+        "description": "CI/CD pipeline with GitHub Actions"
+      }
+    },
+    "checkHealth": "Check API Health",
+    "tryUpload": "Try File Upload (R2)"
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "loginDescription": "Enter your credentials to access your account",
+    "registerTitle": "Create Account",
+    "registerDescription": "Enter your information to create an account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "orContinueWith": "Or continue with",
+    "signInWithGoogle": "Continue with Google"
+  },
+  "errors": {
+    "notFound": {
+      "title": "404",
+      "heading": "Page Not Found",
+      "description": "The page you are looking for does not exist or has been moved."
+    },
+    "generic": {
+      "heading": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again."
+    },
+    "fatal": {
+      "heading": "Something went seriously wrong",
+      "description": "The application encountered a critical error. Please refresh the page."
+    }
+  },
+  "cookie": {
+    "message": "We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.",
+    "learnMore": "Learn more",
+    "acceptAll": "Accept All",
+    "necessaryOnly": "Necessary Only",
+    "customize": "Customize",
+    "preferences": "Cookie Preferences",
+    "necessary": "Necessary",
+    "necessaryRequired": "(Required)",
+    "necessaryDescription": "Essential for the website to function properly.",
+    "analytics": "Analytics",
+    "analyticsDescription": "Help us understand how visitors interact with the website.",
+    "marketing": "Marketing",
+    "marketingDescription": "Used to deliver personalized advertisements.",
+    "back": "Back",
+    "savePreferences": "Save Preferences"
+  },
+  "footer": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "All rights reserved."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back"
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "Choose the plan that works for you"
+  },
+  "billing": {
+    "title": "Billing",
+    "subtitle": "Manage your subscription and billing"
+  }
+}

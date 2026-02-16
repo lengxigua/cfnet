@@ -136,11 +136,13 @@ export default function UploadPage() {
                   ) : result.contentType?.startsWith('audio/') ? (
                     <audio controls className="w-full">
                       <source src={result.url} type={result.contentType} />
+                      <track kind="captions" />
                       Your browser does not support the audio element.
                     </audio>
                   ) : result.contentType?.startsWith('video/') ? (
                     <video controls className="w-full max-w-xl rounded-md border">
                       <source src={result.url} type={result.contentType} />
+                      <track kind="captions" />
                       Your browser does not support the video tag.
                     </video>
                   ) : (
@@ -176,11 +178,13 @@ export default function UploadPage() {
                     ) : item.url && item.contentType?.startsWith('audio/') ? (
                       <audio controls className="w-full">
                         <source src={item.url} type={item.contentType} />
+                        <track kind="captions" />
                         Your browser does not support the audio element.
                       </audio>
                     ) : item.url && item.contentType?.startsWith('video/') ? (
                       <video controls className="w-full max-w-xl rounded-md border">
                         <source src={item.url} type={item.contentType} />
+                        <track kind="captions" />
                         Your browser does not support the video tag.
                       </video>
                     ) : item.url ? (

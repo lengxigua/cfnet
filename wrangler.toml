@@ -26,7 +26,7 @@ id = "8ef79821556f41679ca87967044446dc"  # Local mode does not require a real KV
 
 # Environment variables
 [vars]
-ENVIRONMENT = "production"
+ENVIRONMENT = "development"
 NODE_ENV = "production"
 ANALYTICS_SINK = "log"
 

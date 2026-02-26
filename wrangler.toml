@@ -26,8 +26,8 @@ id = "8ef79821556f41679ca87967044446dc"  # Local mode does not require a real KV
 
 # Environment variables
 [vars]
-ENVIRONMENT = "development"
-NODE_ENV = "production"
+ENVIRONMENT = "local"
+NODE_ENV = "development"
 ANALYTICS_SINK = "log"
 
 # Rate limit configuration

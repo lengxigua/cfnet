@@ -1,6 +1,7 @@
 {
   "common": {
-    "appName": "Edge Next Starter",
+    "appName": "边缘网络",
+    "companyName": "边缘网络",
     "loading": "加载中...",
     "error": "错误",
     "retry": "重试",
@@ -26,31 +27,107 @@
     "upload": "上传",
     "login": "登录",
     "register": "注册",
-    "signOut": "退出"
+    "signOut": "退出",
+    "about": "关于我们",
+    "recruit": "代理招募",
+    "company": "公司介绍"
   },
   "home": {
-    "title": "欢迎使用 Next.js on Cloudflare",
-    "subtitle": "一个生产就绪的模板，集成 Edge Runtime、Workers、D1 和 R2",
-    "features": {
-      "edge": {
-        "title": "Edge Runtime",
-        "description": "来自 Cloudflare 全球网络的极速响应"
-      },
-      "d1": {
-        "title": "D1 数据库",
-        "description": "边缘无服务器 SQL 数据库"
-      },
-      "r2": {
-        "title": "R2 存储",
-        "description": "零出站费用的对象存储"
-      },
-      "deploy": {
-        "title": "自动部署",
-        "description": "基于 GitHub Actions 的 CI/CD 流水线"
+    "hero": {
+      "title": "双原生ISP代理",
+      "subtitle": "专业住宅家宽代理服务，提供真实、稳定、高速的网络代理解决方案",
+      "cta": {
+        "primary": "开始使用",
+        "secondary": "了解更多"
       }
     },
-    "checkHealth": "检查 API 健康状态",
-    "tryUpload": "尝试文件上传 (R2)"
+    "business": {
+      "title": "主营业务",
+      "subtitle": "住宅家宽代理",
+      "description": "我们专注于提供高质量的住宅家宽代理服务，IP地址源自ISP分配给家庭用户的真实宽带，与物理位置紧密绑定，呈现普通家庭用户上网状态，具有超高真实度，网站难以识别为代理。",
+      "dualIsp": {
+        "title": "双原生ISP代理",
+        "description": "结合两个ISP的IP地址实现更强稳定性和匿名性，提供双重认证保障，避免被检测为单一来源代理。这是代理界的\"豪华配置\"，适合高级反侦测场景，为您的业务提供最高级别的安全保障。"
+      },
+      "features": {
+        "residential": {
+          "title": "住宅代理",
+          "description": "IP地址源自真实家庭宽带，超高真实度，完美模拟普通用户上网行为，识别风险极低。"
+        },
+        "isp": {
+          "title": "ISP代理",
+          "description": "由ISP直接分配的静态IP，融合住宅代理的真实性与数据中心的高性能，低识别风险，高速稳定。"
+        },
+        "dual": {
+          "title": "双原生ISP",
+          "description": "双重ISP保障，最高级别的稳定性和匿名性，适合大规模运营和高级反侦测场景。"
+        }
+      }
+    },
+    "company": {
+      "title": "公司介绍",
+      "description": "边缘网络是一家专业的网络代理服务提供商，致力于为全球客户提供高质量、高可靠性的住宅家宽代理和双原生ISP代理服务。我们拥有遍布全球200+城市的IP资源库，每个IP独享带宽，确保99%的可用率和10ms以内的响应时间。",
+      "mission": "我们的使命",
+      "missionText": "通过技术创新和服务优化，为客户提供最真实、最稳定、最快速的网络代理解决方案，助力客户在全球互联网业务中取得成功。",
+      "values": "我们的价值观",
+      "valuesText": "诚信、专业、创新、服务。我们始终以客户需求为中心，持续优化产品和服务，为客户创造最大价值。"
+    },
+    "about": {
+      "title": "关于我们",
+      "description": "边缘网络团队由经验丰富的网络技术专家组成，深耕代理服务领域多年，深谙行业发展趋势和客户需求。我们采用分布式家庭网关部署，确保IP与物理位置精准匹配，IP地址库月度更新，支持HTTP/HTTPS/SOCKS5全协议。",
+      "advantages": {
+        "title": "核心优势",
+        "items": [
+          {
+            "title": "真实度高",
+            "description": "IP地址源自真实家庭宽带，完美模拟普通用户"
+          },
+          {
+            "title": "稳定性强",
+            "description": "99%可用率承诺，10ms以内响应时间"
+          },
+          {
+            "title": "覆盖广泛",
+            "description": "200+城市覆盖能力，满足全球业务需求"
+          },
+          {
+            "title": "协议全面",
+            "description": "支持HTTP/HTTPS/SOCKS5全协议"
+          }
+        ]
+      }
+    },
+    "recruit": {
+      "title": "代理招募",
+      "subtitle": "加入我们，共创未来",
+      "description": "边缘网络正在全球范围内招募优质代理合作伙伴。我们提供具有竞争力的代理价格、完善的技术支持、灵活的结算方式，以及专业的市场推广支持。",
+      "benefits": {
+        "title": "代理优势",
+        "items": [
+          {
+            "title": "高额返佣",
+            "description": "具有竞争力的代理价格和返佣政策"
+          },
+          {
+            "title": "技术支持",
+            "description": "7x24小时专业技术支持团队"
+          },
+          {
+            "title": "灵活结算",
+            "description": "支持多种结算方式，快速到账"
+          },
+          {
+            "title": "市场支持",
+            "description": "提供专业的市场推广和营销素材"
+          }
+        ]
+      },
+      "cta": "申请成为代理"
+    },
+    "features": {
+      "title": "功能特性",
+      "subtitle": "为什么选择我们"
+    }
   },
   "auth": {
     "loginTitle": "登录",
@@ -102,7 +179,9 @@
   "footer": {
     "privacy": "隐私政策",
     "terms": "服务条款",
-    "copyright": "保留所有权利。"
+    "copyright": "保留所有权利。",
+    "companyName": "边缘网络",
+    "description": "专业住宅家宽代理服务提供商"
   },
   "dashboard": {
     "title": "控制台",
@@ -119,5 +198,10 @@
   "billing": {
     "title": "账单",
     "subtitle": "管理您的订阅和账单"
+  },
+  "language": {
+    "switch": "切换语言",
+    "zh": "中文",
+    "en": "English"
   }
 }

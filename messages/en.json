@@ -1,6 +1,7 @@
 {
   "common": {
-    "appName": "Edge Next Starter",
+    "appName": "Edge Network",
+    "companyName": "Edge Network",
     "loading": "Loading...",
     "error": "Error",
     "retry": "Try Again",
@@ -26,31 +27,107 @@
     "upload": "Upload",
     "login": "Login",
     "register": "Sign Up",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "about": "About Us",
+    "recruit": "Agent Recruitment",
+    "company": "Company"
   },
   "home": {
-    "title": "Welcome to Next.js on Cloudflare",
-    "subtitle": "A production-ready template with Edge Runtime, Workers, D1, and R2",
-    "features": {
-      "edge": {
-        "title": "Edge Runtime",
-        "description": "Lightning-fast responses from Cloudflare's global network"
-      },
-      "d1": {
-        "title": "D1 Database",
-        "description": "Serverless SQL database at the edge"
-      },
-      "r2": {
-        "title": "R2 Storage",
-        "description": "Object storage without egress fees"
-      },
-      "deploy": {
-        "title": "Auto Deployment",
-        "description": "CI/CD pipeline with GitHub Actions"
+    "hero": {
+      "title": "Dual Native ISP Proxy",
+      "subtitle": "Professional residential broadband proxy services, providing real, stable, and high-speed network proxy solutions",
+      "cta": {
+        "primary": "Get Started",
+        "secondary": "Learn More"
       }
     },
-    "checkHealth": "Check API Health",
-    "tryUpload": "Try File Upload (R2)"
+    "business": {
+      "title": "Main Business",
+      "subtitle": "Residential Broadband Proxy",
+      "description": "We specialize in providing high-quality residential broadband proxy services. IP addresses originate from real broadband allocated by ISPs to home users, tightly bound to physical locations, presenting normal home user internet behavior with ultra-high authenticity, making it difficult for websites to identify as proxies.",
+      "dualIsp": {
+        "title": "Dual Native ISP Proxy",
+        "description": "Combining IP addresses from two ISPs to achieve stronger stability and anonymity, providing dual authentication guarantees to avoid detection as a single-source proxy. This is the \"luxury configuration\" of the proxy industry, suitable for advanced anti-detection scenarios, providing the highest level of security for your business."
+      },
+      "features": {
+        "residential": {
+          "title": "Residential Proxy",
+          "description": "IP addresses from real home broadband, ultra-high authenticity, perfectly simulating normal user internet behavior with extremely low detection risk."
+        },
+        "isp": {
+          "title": "ISP Proxy",
+          "description": "Static IPs directly allocated by ISPs, combining the authenticity of residential proxies with the high performance of data centers, low detection risk, high speed and stability."
+        },
+        "dual": {
+          "title": "Dual Native ISP",
+          "description": "Dual ISP guarantee, highest level of stability and anonymity, suitable for large-scale operations and advanced anti-detection scenarios."
+        }
+      }
+    },
+    "company": {
+      "title": "Company Introduction",
+      "description": "Edge Network is a professional network proxy service provider committed to providing high-quality, high-reliability residential broadband proxy and dual native ISP proxy services to customers worldwide. We have an IP resource library covering 200+ cities globally, with each IP having dedicated bandwidth, ensuring 99% availability and response times within 10ms.",
+      "mission": "Our Mission",
+      "missionText": "Through technological innovation and service optimization, we provide customers with the most authentic, stable, and fastest network proxy solutions, helping customers succeed in global internet business.",
+      "values": "Our Values",
+      "valuesText": "Integrity, professionalism, innovation, service. We always focus on customer needs, continuously optimize products and services, and create maximum value for customers."
+    },
+    "about": {
+      "title": "About Us",
+      "description": "The Edge Network team consists of experienced network technology experts who have been deeply involved in the proxy service field for many years, deeply understanding industry development trends and customer needs. We adopt distributed home gateway deployment to ensure precise matching of IPs with physical locations, monthly IP address library updates, and support for HTTP/HTTPS/SOCKS5 full protocols.",
+      "advantages": {
+        "title": "Core Advantages",
+        "items": [
+          {
+            "title": "High Authenticity",
+            "description": "IP addresses from real home broadband, perfectly simulating normal users"
+          },
+          {
+            "title": "Strong Stability",
+            "description": "99% availability commitment, response time within 10ms"
+          },
+          {
+            "title": "Wide Coverage",
+            "description": "200+ city coverage capability, meeting global business needs"
+          },
+          {
+            "title": "Full Protocol Support",
+            "description": "Support for HTTP/HTTPS/SOCKS5 full protocols"
+          }
+        ]
+      }
+    },
+    "recruit": {
+      "title": "Agent Recruitment",
+      "subtitle": "Join Us, Create the Future Together",
+      "description": "Edge Network is recruiting quality agent partners worldwide. We provide competitive agent prices, comprehensive technical support, flexible settlement methods, and professional market promotion support.",
+      "benefits": {
+        "title": "Agent Benefits",
+        "items": [
+          {
+            "title": "High Commission",
+            "description": "Competitive agent prices and commission policies"
+          },
+          {
+            "title": "Technical Support",
+            "description": "7x24 hours professional technical support team"
+          },
+          {
+            "title": "Flexible Settlement",
+            "description": "Support for multiple settlement methods, fast payment"
+          },
+          {
+            "title": "Market Support",
+            "description": "Provide professional market promotion and marketing materials"
+          }
+        ]
+      },
+      "cta": "Apply to Become an Agent"
+    },
+    "features": {
+      "title": "Features",
+      "subtitle": "Why Choose Us"
+    }
   },
   "auth": {
     "loginTitle": "Sign In",
@@ -102,7 +179,9 @@
   "footer": {
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
-    "copyright": "All rights reserved."
+    "copyright": "All rights reserved.",
+    "companyName": "Edge Network",
+    "description": "Professional Residential Broadband Proxy Service Provider"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -119,5 +198,10 @@
   "billing": {
     "title": "Billing",
     "subtitle": "Manage your subscription and billing"
+  },
+  "language": {
+    "switch": "Switch Language",
+    "zh": "中文",
+    "en": "English"
   }
 }
